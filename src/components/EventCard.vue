@@ -8,31 +8,45 @@ defineProps({
 </script>
 
 <template>
-  <RouterLink
-    class="number-link"
-    :to="{ name: 'number-details', params: { number: number } }"
-  >
-    <div class="number-card">
-      <h2>{{ number }}</h2>
-      <!-- <span>@{{ number.time }} on {{ number.date }}</span> -->
-    </div>
+  <RouterLink :class="category" :to="{ name: 'number-details', params: { number: number } }">
+    {{ number }}
   </RouterLink>
 </template>
 
 <style scoped>
-  .number-card {
-    padding: 20px;
-    width: 250px;
-    cursor: pointer;
-    border: 1px solid #39495c;
-    margin-bottom: 18px;
+  .important-number {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px 5px;
+      text-align: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: #4CAF50;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      min-width: 120px;
   }
-  .number-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
+
+  .important-number:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
   }
-  .number-link {
-    color: #2c3e50;
-    text-decoration: none;
+
+  .other-number {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
   }
+
+  .other-number:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
 </style>
