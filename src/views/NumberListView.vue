@@ -3,40 +3,50 @@ import { ref, onMounted } from 'vue'
 import EventCard from '@/components/EventCard.vue'
 import ChanceService from '@/services/ChanceService.js'
 
-const numbers = ref(null)
+const numbers = ref([])  // Inicializar como array vacío (evita null)
+const isLoading = ref(true)  // Estado para mostrar loading
+const error = ref(null)  // Para manejar errores
 
-onMounted(() => {
-  ChanceService.getNumbers()
-    .then((response) => {
-      numbers.value = response.data
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+onMounted(async () => {  // Usar async para mejor manejo
+  try {
+    const response = await ChanceService.getNumbers()
+    numbers.value = response.data.data.numbers  // Accede a data.numbers (nota: en tu JSON es data.numbers, no response.data.numbers; ajusta si es necesario)
+  } catch (err) {
+    error.value = 'Error al cargar números: ' + err.message
+    console.error(err)
+  } finally {
+    isLoading.value = false
+  }
 })
 </script>
 
 <template>
   <div class="container">
-  
-  <h1>Los mejores números de hoy</h1>
-        
-    <div class="important-section">
-      <div class="important-title">Los importantes</div>
-      <div class="important-numbers" id="importantNumbers">
-        <EventCard v-for="n in numbers" :number="n" class="important-number"/>
+    <h1>Los mejores números de hoy</h1>
+    
+    <!-- Mostrar loading o error -->
+    <div v-if="isLoading" class="loading">Cargando números...</div>
+    <div v-else-if="error" class="error">{{ error }}</div>
+    <div v-else>
+      <!-- Sección importantes -->
+      <div class="important-section">
+        <div class="important-title">Los importantes</div>
+        <div class="important-numbers" id="importantNumbers">
+          <EventCard v-for="n in numbers.slice(0, 6)" :key="n" :number="n" class="important-number" />  <!-- Muestra solo los primeros 5, ajusta según necesites -->
+        </div>
+      </div>
+
+      <!-- Sección otros números -->
+      <div class="section-title">Otros números</div>
+      <div class="other-numbers" id="otherNumbers">
+        <EventCard v-for="n in numbers.slice(6)" :key="n" :number="n" class="other-number" />  <!-- Muestra el resto -->
       </div>
     </div>
-
-    <div class="section-title">Otros números</div>
-    <div class="other-numbers" id="otherNumbers">
-      <EventCard v-for="n in numbers" :number="n" class="other-number"/>
-    </div>
-
   </div>
 </template>
 
 <style scoped>
+
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
@@ -109,5 +119,23 @@ body {
     border-radius: 4px;
     margin-right: 8px;
     vertical-align: middle;
+}
+
+/* Añadir estilos para loading y error */
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 1.2em;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  color: red;
+  font-size: 1.2em;
+  border: 1px solid red;
+  border-radius: 5px;
+  margin: 20px 0;
 }
 </style>

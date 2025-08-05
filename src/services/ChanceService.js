@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: 'https://my-json-server.typicode.com/awakeelectronik/bestNumbers',
+  baseURL: 'https://api.barati.co/api/v1/analysis',
   withCredentials: false,
   headers: {
     Accept: 'application/json',
@@ -11,7 +11,7 @@ const apiClient = axios.create({
 
 export default {
   getNumbers() {
-    return apiClient.get('/numbers')
+    return apiClient.get('/best-numbers')
   },
   getNumber(id) {
     return apiClient.get('/numbers/' + id)
